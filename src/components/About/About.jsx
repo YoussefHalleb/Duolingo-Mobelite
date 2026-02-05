@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../shared/layout';
 import './About.css';
-
+ 
 const About = () => (
   <Layout>
     <div className="about-container">
