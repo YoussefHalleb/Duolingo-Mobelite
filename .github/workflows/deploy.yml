@@ -25,7 +25,7 @@ jobs:
         docker run --rm \
           -e SONAR_HOST_URL="http://localhost:9000" \
           -e SONAR_LOGIN="${{ secrets.SONAR_TOKEN }}" \
-          -v ${PWD}:/usr/src \
+          -v ${PWD}:/usr/src \ 
           sonarsource/sonar-scanner-cli \
           -Dsonar.projectKey=duolingo-mobelite \
           -Dsonar.projectName=Duolingo-Mobelite \
