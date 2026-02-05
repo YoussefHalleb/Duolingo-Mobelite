@@ -11,7 +11,27 @@ env:
 
 jobs:
   
+# =========================
+# SAST - SonarQube (ON-PREM)
+# =========================
+  sonarqube:
+    name: SAST - SonarQube
+    runs-on: self-hosted   # IMPORTANT si SonarQube est local
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=duolingo-mobelite
+            -Dsonar.projectName=Duolingo-Mobelite
+            -Dsonar.sources=src
+            -Dsonar.exclusions=node_modules/**,build/**,dist/**
+            -Dsonar.javascript.node.maxspace=4096
 
 # =========================
 # SAST - Bandit (backend / scripts)
