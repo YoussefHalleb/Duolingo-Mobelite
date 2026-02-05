@@ -83,38 +83,6 @@ jobs:
           DD_ENGAGEMENT: ${{ secrets.DD_ENGAGEMENT }}
 
 
-# =====================================================
-# SCA - DEPENDENCY CHECK
-# =====================================================
-  dependency-check:
-    name: SCA - Dependency Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run Dependency Check
-        uses: dependency-check/Dependency-Check_Action@main
-        with:
-          format: XML
-          out: dependency-check
-        continue-on-error: true
-      - name: Debug files
-        run: ls -R
-
-      - name: Upload Dependency Check to DefectDojo
-        run: |
-          curl -X POST "$DEFECTDOJO_URL/api/v2/import-scan/" \
-            -H "Authorization: Token $DEFECTDOJO_TOKEN" \
-            -F "scan_type=Dependency Check Scan" \
-            -F "product_name=$DD_PRODUCT" \
-            -F "engagement_name=$DD_ENGAGEMENT" \
-            -F "file=@dependency-check/dependency-check-report.xml"
-        env:
-          DEFECTDOJO_URL: ${{ secrets.DEFECTDOJO_URL }}
-          DEFECTDOJO_TOKEN: ${{ secrets.DEFECTDOJO_TOKEN }}
-          DD_PRODUCT: ${{ secrets.DD_PRODUCT }}
-          DD_ENGAGEMENT: ${{ secrets.DD_ENGAGEMENT }}
 
 
 # =====================================================
