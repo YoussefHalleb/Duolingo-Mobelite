@@ -99,6 +99,8 @@ jobs:
           format: XML
           out: dependency-check
         continue-on-error: true
+      - name: Debug files
+        run: ls -R
 
       - name: Upload Dependency Check to DefectDojo
         run: |
