@@ -10,7 +10,7 @@ env:
   IMAGE_TAG: latest
 
 jobs:
-
+ 
 # =========================
 # SAST - SonarQube (ON-PREM)
 # =========================
