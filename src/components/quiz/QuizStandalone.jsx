@@ -6,7 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import MultipleChoice from "./MultipleChoice";
 import FreeInput from "./FreeInput";
 import MatchingSimple from "./MatchingSimple";
-import SentenceBuilder from "./SentenceBuilder";
+import SentenceBuilder from "../Quiz/SentenceBuilder";
 import { useLanguage } from "../../context/LanguageContext";
 
 export default function QuizStandalone() {
