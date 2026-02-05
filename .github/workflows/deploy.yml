@@ -1,4 +1,4 @@
-name: DevSecOps Full Pipeline (SonarQube On-Prem)
+name: DevSecOps Full Pipeline - React Firebase
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: juice-shop
+  IMAGE_NAME: duolingo-mobelite
   IMAGE_TAG: latest
 
 jobs:
@@ -21,19 +21,20 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: sonarsource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=juice-shop
-            -Dsonar.projectName=juice-shop
-            -Dsonar.sources=.
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.projectKey=duolingo-mobelite
+            -Dsonar.projectName=Duolingo-Mobelite
+            -Dsonar.sources=src
+            -Dsonar.exclusions=node_modules/**,build/**,dist/**
+            -Dsonar.javascript.node.maxspace=4096
 
 # =========================
-# SAST - Bandit
+# SAST - Bandit (backend / scripts)
 # =========================
   bandit:
     name: SAST - Bandit
@@ -78,10 +79,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG .
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG .
 
       - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG
 
 # =========================
 # SCA - Trivy (Image)
@@ -94,7 +97,7 @@ jobs:
       - name: Run Trivy
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/juice-shop:latest
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/duolingo-mobelite:latest
           format: json
           output: trivy.json
         continue-on-error: true
@@ -151,8 +154,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: docker-build-push
     steps:
-      - name: Run Juice Shop
-        run: docker run -d -p 3000:3000 bkimminich/juice-shop
+      - name: Run Application Container
+        run: |
+          docker run -d -p 3000:80 \
+            ${{ secrets.DOCKERHUB_USERNAME }}/duolingo-mobelite:latest
 
       - name: Wait for app
         run: sleep 30
